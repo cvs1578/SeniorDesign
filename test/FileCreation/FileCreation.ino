@@ -59,22 +59,34 @@ void fileCreation(char* file, int x){
   //Then we determine if the file already exists
   if (SD.exists(names))
   {
+    char tens = '0';
     char n = '0';
     char newname[16]; //If it does we create a new file
     for (int i = 0; i < x; i++)
     {
       newname[i] = file[i];
     }
-    newname[x] = n; //Only this time we have a number stored before the .txt
-    //NOTE: We can only store 10 files with this method. 
-    newname[x+1] = '.';
-    newname[x+2] = 't';
-    newname[x+3] = 'x';
-    newname[x+4] = 't';
+    newname[x] = tens; //Only this time we have a number stored before the .txt
+    //NOTE: We can only store 100 files with this method. 
+    newname[x+1] = n;
+    newname[x+2] = '.';
+    newname[x+3] = 't';
+    newname[x+4] = 'x';
+    newname[x+5] = 't';
     while (SD.exists(newname))
     {
-      n++; //We increment n until the file doesn't exist
-      newname[x] = n;
+      if(n == '9')
+      {
+        tens++;
+        n = '0';
+        newname[x] = tens;
+        newname[x+1] = n;
+      }
+      else
+      {
+        n++; //We increment n until the file doesn't exist
+        newname[x+1] = n;
+      }
     }
     
     //This is to determine if the file naming system works
