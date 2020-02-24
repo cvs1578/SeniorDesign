@@ -7,9 +7,21 @@ unsigned long pulseWidth;
 const int chipSelect = BUILTIN_SDCARD;
 char lidarfile[16] = "lidar";
 char surfA[16] = "surfA";
-int controlAPin = A9; // linear Hall magnetic sensor analog interface
+char surfB[16] = "surfB";
+char surfC[16] = "surfC";
+char surfD[16] = "surfD";
+int controlAPin = 23; // linear Hall magnetic sensor analog interface
+int controlBPin=22;
+int controlCPin=21;
+int controlDPin=20;
+int TOGGLESWITCH=32;
+int BLUELED=24;
 void setup()
 {
+  pinMode(TOGGLESWITCH,INPUT);//SWITCH TO START/STOP DATA AQUISITION
+  pinMode(BLUELED,OUTPUT);
+  digitalWrite(BLUELED,LOW); //This is to indicate the files are created
+  
   Serial.begin(115200); // Start serial communications
   while (!Serial) {
     ; // wait for serial port to connect. Needed for Leonardo only
@@ -36,8 +48,32 @@ void setup()
   Serial.println("done.");
   ///////CONTROL SURFACE SENSOR A FILE//////////////
 
+  ///////CONTROL SURFACE SENSOR B FILE//////////////
+  fileCreation(surfB, 5);  
+  myFile = SD.open(surfB, FILE_WRITE);
+  myFile.println("Control Surface B test");
+  myFile.close();
+  Serial.println("done.");
+  ///////CONTROL SURFACE SENSOR B FILE//////////////
+
+  ///////CONTROL SURFACE SENSOR C FILE//////////////
+  fileCreation(surfC, 5);  
+  myFile = SD.open(surfC, FILE_WRITE);
+  myFile.println("Control Surface C test");
+  myFile.close();
+  Serial.println("done.");
+  ///////CONTROL SURFACE SENSOR C FILE//////////////
+
+
+  ///////CONTROL SURFACE SENSOR D FILE//////////////
+  fileCreation(surfD, 5);  
+  myFile = SD.open(surfD, FILE_WRITE);
+  myFile.println("Control Surface D test");
+  myFile.close();
+  Serial.println("done.");
+  ///////CONTROL SURFACE SENSOR D FILE//////////////
+  
   ///////LIDAR FILE CREATION////////////////
-  delay(100);
   fileCreation(lidarfile, 5); // We put in the name of the file we want and the amount of characters already in it
   myFile = SD.open(lidarfile, FILE_WRITE);
   myFile.println("This is a test. Are you still there? Hello?");
@@ -60,12 +96,12 @@ void setup()
     Serial.println("RTC has set the system time");
   }
   //FOR TIMER//////////////////////////////////////////////////
-  
+
+  digitalWrite(BLUELED,HIGH); //This is to indicate the files are created BLUE LED
 }
 
 void loop()
 {
-
   //FOR TIMER/////////////////////////////////////////////////
   if (Serial.available()) {
     time_t t = processSyncMessage();
@@ -75,9 +111,16 @@ void loop()
     }
   }
   //FOR TIMER//////////////////////////////////////////////
+
+
+//DATA AQUISITION WON'T START TILL SWITCH IS FLIPPED
+  getlidar();
+  getcontrolsurf(surfA, controlAPin);
+  getcontrolsurf(surfB, controlAPin);
+  getcontrolsurf(surfC, controlAPin);
+  getcontrolsurf(surfD, controlAPin);
+ 
   
-  //getlidar();
-  getcontrolsurfA();
 }
 
 
@@ -105,15 +148,15 @@ void getlidar(){
 
 
 
-/////////////CONTROL SURFACE A FUNCTION////////////////////////
-void getcontrolsurfA(){
+/////////////CONTROL SURFACE FUNCTION////////////////////////
+void getcontrolsurf(char filename, int controlpin){
     String h=String(hour())+":";
     String m=String(minute())+":";
     String s=String(second());
     String TimeNow=h+m+s;
-    int reading = analogRead(A9);
+    int reading = analogRead(controlpin);
     String measurement=String(reading)+","+TimeNow;
-    myFile = SD.open(surfA, FILE_WRITE);
+    myFile = SD.open(filename, FILE_WRITE);
 // If we get a reading that isn't zero, let's print it
     if(reading != 0){
       Serial.println(measurement); // Print the distance ONLY USING THIS FOR TESTING and CALIBRATION
@@ -122,7 +165,7 @@ void getcontrolsurfA(){
     }
     myFile.close();
   }
-/////////////CONTROL SURFACE A FUNCTION////////////////////////
+/////////////CONTROL SURFACE FUNCTION////////////////////////
 
 
 
@@ -139,7 +182,7 @@ void fileCreation(char* file, int x){
   names[x+2] = 'x';
   names[x+3] = 't';
 
-     for (int i = 0; i < x+3; i++)
+     for (int i = 0; i < x+4; i++)
     {
     Serial.print(names[i]);
     }
@@ -147,6 +190,7 @@ void fileCreation(char* file, int x){
   //Then we determine if the file already exists
   if (SD.exists(names))
   {
+    Serial.println("Determed file exists");
     char tens = '0';
     char n = '0';
     char newname[16]; //If it does we create a new file
@@ -176,7 +220,7 @@ void fileCreation(char* file, int x){
         n++; //We increment n until the file doesn't exist
         newname[x+1] = n;
       }
-      delay(100);
+      delay(500);
     }
     
     //This is to determine if the file naming system works
