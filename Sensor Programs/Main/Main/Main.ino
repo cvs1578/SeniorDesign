@@ -6,19 +6,17 @@ File myFile;
 unsigned long pulseWidth;
 const int chipSelect = BUILTIN_SDCARD;
 char lidarfile[16] = "lidar";
-char surfA[16] = "surfA";
-char surfB[16] = "surfB";
-char surfC[16] = "surfC";
-char surfD[16] = "surfD";
+char surfA[16] = "surfa";
+char surfB[16] = "surfb";
+char surfC[16] = "surfc";
+char surfD[16] = "surfd";
 int controlAPin = 23; // linear Hall magnetic sensor analog interface
 int controlBPin=22;
 int controlCPin=21;
 int controlDPin=20;
-int TOGGLESWITCH=32;
 int BLUELED=24;
 void setup()
 {
-  pinMode(TOGGLESWITCH,INPUT);//SWITCH TO START/STOP DATA AQUISITION
   pinMode(BLUELED,OUTPUT);
   digitalWrite(BLUELED,LOW); //This is to indicate the files are created
   
@@ -38,46 +36,36 @@ void setup()
   }
   Serial.println("initialization done.");
 
-  
-  ///////CONTROL SURFACE SENSOR A FILE//////////////
   delay(100);
+  ///////CONTROL SURFACE SENSOR A FILE//////////////
   fileCreation(surfA, 5);  
-  myFile = SD.open(surfA, FILE_WRITE);
-  myFile.println("Control Surface A test");
-  myFile.close();
+delay(100);
   Serial.println("done.");
   ///////CONTROL SURFACE SENSOR A FILE//////////////
 
+delay(100);
   ///////CONTROL SURFACE SENSOR B FILE//////////////
   fileCreation(surfB, 5);  
-  myFile = SD.open(surfB, FILE_WRITE);
-  myFile.println("Control Surface B test");
-  myFile.close();
+
   Serial.println("done.");
   ///////CONTROL SURFACE SENSOR B FILE//////////////
-
+delay(100);
   ///////CONTROL SURFACE SENSOR C FILE//////////////
   fileCreation(surfC, 5);  
-  myFile = SD.open(surfC, FILE_WRITE);
-  myFile.println("Control Surface C test");
-  myFile.close();
+
   Serial.println("done.");
   ///////CONTROL SURFACE SENSOR C FILE//////////////
-
+delay(100);
 
   ///////CONTROL SURFACE SENSOR D FILE//////////////
   fileCreation(surfD, 5);  
-  myFile = SD.open(surfD, FILE_WRITE);
-  myFile.println("Control Surface D test");
-  myFile.close();
+
   Serial.println("done.");
   ///////CONTROL SURFACE SENSOR D FILE//////////////
-  
+  delay(100);
   ///////LIDAR FILE CREATION////////////////
   fileCreation(lidarfile, 5); // We put in the name of the file we want and the amount of characters already in it
-  myFile = SD.open(lidarfile, FILE_WRITE);
-  myFile.println("This is a test. Are you still there? Hello?");
-  myFile.close();
+
   Serial.println("done.");
   ////////LIDAR FILE CREATION///////////////
   delay(100);
@@ -149,7 +137,7 @@ void getlidar(){
 
 
 /////////////CONTROL SURFACE FUNCTION////////////////////////
-void getcontrolsurf(char filename, int controlpin){
+void getcontrolsurf(char* filename, int controlpin){
     String h=String(hour())+":";
     String m=String(minute())+":";
     String s=String(second());
@@ -171,6 +159,7 @@ void getcontrolsurf(char filename, int controlpin){
 
 /////////////////////FILE CREATION/////////////////////////////
 void fileCreation(char* file, int x){
+  delay(100);
   char names[16];
   for (int i = 0; i < x; i++)
   {
@@ -181,13 +170,14 @@ void fileCreation(char* file, int x){
   names[x+1] = 't';
   names[x+2] = 'x';
   names[x+3] = 't';
-
+delay(100);
      for (int i = 0; i < x+4; i++)
     {
     Serial.print(names[i]);
     }
     Serial.println("");
   //Then we determine if the file already exists
+  
   if (SD.exists(names))
   {
     Serial.println("Determed file exists");
