@@ -12,7 +12,7 @@
 
 HX711 scale(A12,A13);
 
-float calibration_factor = -500 ; // this calibration factor is adjusted according to my load cell
+float calibration_factor = 1500 ; // this calibration factor is adjusted according to my load cell
 float units;
 float ounces;
 
@@ -38,7 +38,7 @@ void loop() {
 
   Serial.print("Reading: ");
   units = scale.get_units(), 10;
-  //if (units < 0)
+  if (units < 0)
   
   {
     units = 0.00;
@@ -58,4 +58,5 @@ void loop() {
     else if(temp == '-' || temp == 'z')
       calibration_factor -= 1;
   }
+  delay(100);
 }
