@@ -10,9 +10,9 @@
 
 #include "HX711.h"
 
-HX711 scale(A12,A13);
+HX711 scale(A13,A12);
 
-float calibration_factor = 1500 ; // this calibration factor is adjusted according to my load cell
+float calibration_factor = -7500 ; // this calibration factor is adjusted according to my load cell
 float units;
 float ounces;
 

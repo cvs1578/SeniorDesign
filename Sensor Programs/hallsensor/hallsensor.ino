@@ -2,7 +2,7 @@
 #include <SPI.h>
 #include <TimeLib.h>
 int digitalPin = 4; // linear Hall magnetic sensor digital interface
-int controlAPin = A9; // linear Hall magnetic sensor analog interface
+int controlAPin = A13; // linear Hall magnetic sensor analog interface
 int reading; // analog reading
 char controlsurfaceA[16];
 String measurement;
