@@ -1,4 +1,4 @@
-/*
+ /*
  Setup your scale and start the sketch WITHOUT a weight on the scale
  Once readings are displayed place the weight on the scale
  Press +/- or a/z to adjust the calibration_factor until the output readings match the known weight
@@ -8,11 +8,11 @@
  Arduino pin GND -> HX711 GND 
 */
 
-#include "HX711.h"
+#include "HX711work.h"
 
-HX711 scale(A13,A12);
+HX711 scale(32,31);
 
-float calibration_factor = -7500 ; // this calibration factor is adjusted according to my load cell
+float calibration_factor = -4000; // this calibration factor is adjusted according to my load cell 600 had zero reading
 float units;
 float ounces;
 
@@ -23,7 +23,7 @@ void setup() {
   Serial.println("After readings begin, place known weight on scale");
   Serial.println("Press + or a to increase calibration factor");
   Serial.println("Press - or z to decrease calibration factor");
-
+ 
   scale.set_scale();
   scale.tare();  //Reset the scale to 0
 
@@ -33,7 +33,7 @@ void setup() {
 }
 
 void loop() {
-
+  delay(500);
   scale.set_scale(calibration_factor); //Adjust to this calibration factor
 
   Serial.print("Reading: ");
@@ -57,6 +57,8 @@ void loop() {
       calibration_factor += 1;
     else if(temp == '-' || temp == 'z')
       calibration_factor -= 1;
+     
   }
-  delay(100);
+  
+
 }
